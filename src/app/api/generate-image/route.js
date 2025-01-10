@@ -25,13 +25,15 @@ export async function POST(request) {
     }
 
     const output = await replicate.run(
-      "stability-ai/stable-diffusion:ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4",
+      "black-forest-labs/flux-schnell",
       {
         input: {
           prompt: prompt,
           num_outputs: 1,
-          guidance_scale: 7.5,
-          num_inference_steps: 50,
+          aspect_ratio: aspectRatio || "16:9",
+          output_format: "webp",
+          output_quality: 100, // Setting this explicitly to 100 for highest quality
+          go_fast: true
         },
       }
     );
@@ -51,7 +53,7 @@ export async function POST(request) {
     const base64Image = Buffer.from(imageArrayBuffer).toString("base64");
 
     return NextResponse.json({ 
-      imageUrl: `data:image/png;base64,${base64Image}`,
+      imageUrl: `data:image/webp;base64,${base64Image}`,
       originalUrl: imageUrl
     });
   } catch (error) {
